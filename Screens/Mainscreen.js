@@ -6,9 +6,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  ToastAndroid,
+  Alert
 } from "react-native";
-import { COLORS } from "../constants/theme";
-import Icon from "react-native-vector-icons/FontAwesome";
 import React ,{useState}from "react";
 import Cards from "../constants/Cards";
 import { TextInput,GestureHandlerRootView  } from "react-native-gesture-handler";
@@ -17,8 +17,19 @@ const Mainscreen = () => {
   const [tab,setTab] =useState();
   const[items,setItems]=useState([]);
 
+
+  const notifyMessage = (msg) => {
+    Platform === 'android' 
+      ? ToastAndroid.show(msg, ToastAndroid.SHORT) 
+      : Alert.alert(msg);
+  }
+
   const handleaddnew=()=>{
     Keyboard.dismiss();
+    if (tab === '' || !tab) {
+      notifyMessage("Please enter a valid Tablet Name");
+      return;
+    }
     setItems([...items,tab])
     setTab(null)
   }
@@ -34,7 +45,7 @@ const Mainscreen = () => {
     <View style={styles.container}>
 
       <View style={styles.cardWrapper}>
-        <Text style={styles.sectionTitle}>Your Tablet's</Text>
+        <Text style={styles.sectionTitle}>Your Tablets</Text>
       </View>
 
       <View style={styles.items}>
