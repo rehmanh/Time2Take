@@ -7,11 +7,12 @@ import {
   Platform,
   Keyboard,
   ToastAndroid,
-  Alert
+  Alert,
+  FlatList
 } from "react-native";
 import React ,{useState}from "react";
 import Cards from "../constants/Cards";
-import { TextInput,GestureHandlerRootView  } from "react-native-gesture-handler";
+import { TextInput,GestureHandlerRootView, ScrollView  } from "react-native-gesture-handler";
 
 const Mainscreen = () => {
   const [tab,setTab] =useState();
@@ -47,9 +48,8 @@ const Mainscreen = () => {
       <View style={styles.cardWrapper}>
         <Text style={styles.sectionTitle}>Your Tablets</Text>
       </View>
-
-      <View style={styles.items}>
-
+    
+      <ScrollView style={styles.items}>
         {
           items.map((item,index)=> {
             return(
@@ -57,13 +57,11 @@ const Mainscreen = () => {
               <Cards  text={item} />
             </TouchableOpacity>)
               
-          }
+            }
           )
         }
+      </ScrollView>
 
-        {/* <Cards text={"Tab 1"} />
-        <Cards text={"Tab 2"} /> */}
-      </View>
       {/*Typing space */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
