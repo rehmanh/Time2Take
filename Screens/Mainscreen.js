@@ -82,7 +82,7 @@ const Mainscreen = () => {
         {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
      
 
-        <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/>
+        {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
         <TouchableOpacity onPress={goToForm}>
 
           <View style={styles.addwrapper}>
