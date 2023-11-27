@@ -13,17 +13,27 @@ import {
 import React ,{useState}from "react";
 import Cards from "../constants/Cards";
 import { TextInput,GestureHandlerRootView, ScrollView  } from "react-native-gesture-handler";
+
 import { COLORS } from '../constants/theme';
+
+import { useNavigation } from '@react-navigation/core';
+
 
 const Mainscreen = () => {
   const [tab,setTab] =useState();
   const[items,setItems]=useState([]);
+  const navigation = useNavigation();
 
 
   const notifyMessage = (msg) => {
     Platform === 'android' 
       ? ToastAndroid.show(msg, ToastAndroid.SHORT) 
       : Alert.alert(msg);
+  }
+
+
+  const goToForm = () => {
+    navigation.navigate('Form')
   }
 
   const handleaddnew=()=>{
@@ -54,7 +64,7 @@ const Mainscreen = () => {
         {
           items.map((item,index)=> {
             return(
-            <TouchableOpacity key={index} onPress={()=>check(index)}>
+            <TouchableOpacity key={index} >
               <Cards  text={item} />
             </TouchableOpacity>)
               
@@ -68,8 +78,13 @@ const Mainscreen = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.twrapper}
       >
+
         {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
-        <TouchableOpacity onPress={handleaddnew}>
+     
+
+        <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/>
+        <TouchableOpacity onPress={goToForm}>
+
           <View style={styles.addwrapper}>
             <Text style={styles.addtext}>+</Text>
           </View>
