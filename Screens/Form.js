@@ -8,6 +8,22 @@ import * as SQLite from 'expo-sqlite';
 const Form = () => {
     const [db, setDb] = useState(SQLite.openDatabase('example.db'))
     const [date, setDate] = useState(new Date());
+
+    const [medicationName, setMedicationName] = useState("");
+    const [medicationDescription, setMedicationDescription] = useState("");
+
+    const wordLimit = 150;
+    // Implement logic to limit the number of words
+    const handleDescription = (event) => {
+      const inputText = event.nativeEvent.text;
+      if (inputText) {
+        const words = inputText.split(/\s+/); // Split by any whitespace character
+        const limitedWords = words.slice(0, wordLimit); // Take the first 150 words
+        const limitedText = limitedWords.join(' '); // Join the limited words back into a string
+    
+        setMedicationDescription(limitedText);
+      }
+    };
     const [time, setTime] = useState(new Date());
     const [currentMedication, setCurrentMedication] = useState('');
 
@@ -61,11 +77,18 @@ const Form = () => {
       setTime(currentTime);
     }
 
+
     return (
         <GestureHandlerRootView style={styles.bigboy}>
             <View style={styles.container}>
+
+                <TextInput style={styles.input} placeholder="Medication Name" value={medicationName} onChange={(text) => setMedicationName(text)}/>
+                <TextInput style={styles.input} placeholder="Medication description" value={medicationDescription} onChange={handleDescription}/>
+
+
                 <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/>
                 
+
                 <DateTimePicker 
                     style={styles.datetime}
                     value={date}
@@ -134,7 +157,8 @@ const styles = StyleSheet.create({
       width: 250,
       alignSelf: 'center',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginBottom:10,
     },
     datetime: {
       paddingTop: 10,
