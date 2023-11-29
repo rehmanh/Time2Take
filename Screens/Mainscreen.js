@@ -10,47 +10,59 @@ import {
   Alert,
   FlatList
 } from "react-native";
-import React ,{useState}from "react";
+import React ,{useEffect, useState}from "react";
 import Cards from "../constants/Cards";
 import { TextInput,GestureHandlerRootView, ScrollView  } from "react-native-gesture-handler";
-
 import { COLORS } from '../constants/theme';
-
 import { useNavigation } from '@react-navigation/core';
+import * as SQLite from 'expo-sqlite';
 
 
 const Mainscreen = () => {
+  const db = SQLite.openDatabase('example.db');
   const [tab,setTab] =useState();
   const[items,setItems]=useState([]);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    db.transaction(tx => {
+      tx.executeSql('create table if not exists Medications (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT not null, time TEXT not null)')
+    })
 
-  const notifyMessage = (msg) => {
-    Platform === 'android' 
-      ? ToastAndroid.show(msg, ToastAndroid.SHORT) 
-      : Alert.alert(msg);
+    db.transaction(tx => {
+      tx.executeSql('select * from Medications', null,
+        (txObj, resultSet) => setItems(resultSet.rows._array),
+        (txObj, error) => console.log(error)
+      );
+    })
+  }, [db])
+
+  const showMedications = () => {
+    return items.map((item,index)=> {
+      return(
+      <TouchableOpacity key={item.id} onPress={() => deleteMedication(item.id)} >
+        <Cards text={item.name} schedule={item.time}/>
+      </TouchableOpacity>)
+      });
   }
 
+  const deleteMedication = (id) => {
+    db.transaction(tx => {
+      tx.executeSql('delete from Medications where id = ?', [id], 
+        (txObj, resultSet) => {
+          if (resultSet.rowsAffected > 0) {
+            let existingMedication = [...items].filter(med => med.id != id);
+            setItems(existingMedication);
+          }
+        },
+        (txObj, error) => console.log(error)
+      );
+    })
+  }
 
   const goToForm = () => {
     navigation.navigate('Form')
   }
-
-  const handleaddnew=()=>{
-    Keyboard.dismiss();
-    if (tab === '' || !tab) {
-      notifyMessage("Please enter a valid Tablet Name");
-      return;
-    }
-    setItems([...items,tab])
-    setTab(null)
-  }
-  const check =(index)=>{
-    let itemscopy =[...items];
-    itemscopy.splice(index,1);
-    setItems(itemscopy);
-  }
-
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -61,16 +73,7 @@ const Mainscreen = () => {
       </View>
     
       <ScrollView style={styles.items}>
-        {
-          items.map((item,index)=> {
-            return(
-            <TouchableOpacity key={index} >
-              <Cards  text={item} />
-            </TouchableOpacity>)
-              
-            }
-          )
-        }
+        { showMedications() }
       </ScrollView>
 
       {/*Typing space */}
@@ -79,10 +82,13 @@ const Mainscreen = () => {
         style={styles.twrapper}
       >
 
+
         {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
      
 
         {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
+
+
         <TouchableOpacity onPress={goToForm}>
 
           <View style={styles.addwrapper}>
@@ -114,7 +120,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   twrapper: {
-    //position: 'absolute',
     paddingLeft:20,
     paddingRight:20,
     bottom: 25,
@@ -123,15 +128,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  // input: {
-  //   paddingVertical: 15,
-  //   paddingHorizontal: 15,
-  //   backgroundColor: '#FFF',
-  //   borderRadius: 20, 
-  //   borderColor: '#C0C0C0',
-  //   borderWidth: 1,
-  //   width: 250,
-  // },
   addwrapper: {
     height: 60,
     width: 300,
