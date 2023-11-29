@@ -25,6 +25,8 @@ const Form = () => {
       }
     };
 
+
+
     const [time, setTime] = useState(new Date());
     const [currentMedication, setCurrentMedication] = useState('');
 
@@ -86,8 +88,8 @@ const Form = () => {
                 <TextInput style={styles.input} placeholder="Medication Name" value={medicationName} onChange={(text) => setMedicationName(text)}/>
                 <TextInput style={styles.input} placeholder="Medication description" value={medicationDescription} onChange={handleDescription}/>
 
-=======
-                <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/>
+
+               <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/>
                 
 
                 <DateTimePicker 
