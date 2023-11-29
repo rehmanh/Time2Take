@@ -6,7 +6,6 @@ import Mainscreen from './Screens/Mainscreen';
 import Form from './Screens/Form';
 import { StyleSheet, Text, View } from 'react-native';
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
