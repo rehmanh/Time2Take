@@ -84,12 +84,13 @@ const Form = () => {
     return (
         <GestureHandlerRootView style={styles.bigboy}>
             <View style={styles.container}>
+            
+            
+                <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/> 
+                {/* <TextInput style={styles.input} placeholder="Medication Name" value={medicationName} onChange={(text) => setMedicationName(text)}/> */}
+                <TextInput style={styles.input} value={medicationDescription} onChangeText={setMedicationDescription} placeholder="Medication description"/>
 
-                <TextInput style={styles.input} placeholder="Medication Name" value={medicationName} onChange={(text) => setMedicationName(text)}/>
-                <TextInput style={styles.input} placeholder="Medication description" value={medicationDescription} onChange={handleDescription}/>
 
-
-               <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/>
                 
 
                 <DateTimePicker 

@@ -4,11 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Homescreen from './Screens/Homescreen';
 import Mainscreen from './Screens/Mainscreen';
 import Form from './Screens/Form';
+import NotificationService from './NotificationService';
 import { StyleSheet, Text, View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  useEffect(() => {
+    // Initialize notification service
+    NotificationService.configure();
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
