@@ -8,9 +8,9 @@ import * as SQLite from 'expo-sqlite';
 const Form = () => {
     const [db, setDb] = useState(SQLite.openDatabase('example.db'))
     const [date, setDate] = useState(new Date());
-
-    const [medicationName, setMedicationName] = useState("");
     const [medicationDescription, setMedicationDescription] = useState("");
+    const [time, setTime] = useState(new Date());
+    const [currentMedication, setCurrentMedication] = useState('');
 
     const wordLimit = 150;
     // Implement logic to limit the number of words
@@ -24,9 +24,7 @@ const Form = () => {
         setMedicationDescription(limitedText);
       }
     };
-    const [time, setTime] = useState(new Date());
-    const [currentMedication, setCurrentMedication] = useState('');
-
+    
     useEffect(() => {
       db.transaction(tx => {
         tx.executeSql('create table if not exists Medications (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT not null, time TEXT not null)')
@@ -49,12 +47,18 @@ const Form = () => {
         return;
       }
 
+      if (medicationDescription === '' || !medicationDescription) {
+        notifyMessage('Please enter a valid Medication Description');
+        return;
+      }
+
       db.transaction(tx => {
         tx.executeSql('insert into Medications (name, time) values (?, ?)', [currentMedication, date.toLocaleDateString() + ' ' + time.toLocaleTimeString()],
           (txObj, resultSet) => {
             setDate(new Date());
             setTime(new Date());
             setCurrentMedication('');
+            setMedicationDescription('');
           },
           (txObj, error) => console.log(error)
         );
@@ -81,13 +85,8 @@ const Form = () => {
     return (
         <GestureHandlerRootView style={styles.bigboy}>
             <View style={styles.container}>
-
-                <TextInput style={styles.input} placeholder="Medication Name" value={medicationName} onChange={(text) => setMedicationName(text)}/>
-                <TextInput style={styles.input} placeholder="Medication description" value={medicationDescription} onChange={handleDescription}/>
-
-
                 <TextInput style={styles.input} value={currentMedication} onChangeText={setCurrentMedication} placeholder="Medication Name"/>
-                
+                <TextInput style={styles.input} placeholder="Medication Description" value={medicationDescription} onChange={handleDescription}/>
 
                 <DateTimePicker 
                     style={styles.datetime}
