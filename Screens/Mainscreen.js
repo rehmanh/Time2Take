@@ -7,8 +7,7 @@ import {
   Platform,
   Keyboard,
   ToastAndroid,
-  Alert,
-  FlatList
+  Alert
 } from "react-native";
 import React ,{useEffect, useState}from "react";
 import Cards from "../constants/Cards";
@@ -16,7 +15,6 @@ import { TextInput,GestureHandlerRootView, ScrollView  } from "react-native-gest
 import { COLORS } from '../constants/theme';
 import { useNavigation } from '@react-navigation/core';
 import * as SQLite from 'expo-sqlite';
-
 
 const Mainscreen = () => {
   const db = SQLite.openDatabase('example.db');
@@ -40,10 +38,14 @@ const Mainscreen = () => {
   const showMedications = () => {
     return items.map((item,index)=> {
       return(
-      <TouchableOpacity key={item.id} onPress={() => deleteMedication(item.id)} >
+      <TouchableOpacity key={item.id} onPress={() => alertIfDelete(item)} >
         <Cards text={item.name} schedule={item.time}/>
       </TouchableOpacity>)
       });
+  }
+
+  const alertIfDelete = (item) => {
+    notifyMessage(item, `Reminder for ${item.name}`);
   }
 
   const deleteMedication = (id) => {
@@ -60,12 +62,41 @@ const Mainscreen = () => {
     })
   }
 
+  const notifyMessage = (item, msg) => {
+    Platform === 'android' 
+      ? showAndroidAlert(msg)
+      : showIosAlert(item, msg);
+  };
+
+  const showAndroidAlert = (msg) => {
+    return ToastAndroid.show(msg, ToastAndroid.SHORT)
+  };
+
+  const showIosAlert = (item, msg) => {
+    return Alert.alert('Medication Reminder', msg, [
+      {
+        text: 'Ask me later',
+        onPress: () => console.log('Ask me later pressed'),
+      },
+      {
+        text: 'Record', 
+        onPress: () => console.log('Record Pressed')
+      },
+      {
+        text: 'Delete',
+        onPress: () => deleteMedication(item.id),
+        style: 'cancel',
+      }
+    ]);
+  }
+
   const goToForm = () => {
     navigation.navigate('Form')
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+
     <View style={styles.container}>
 
       <View style={styles.cardWrapper}>
@@ -81,13 +112,6 @@ const Mainscreen = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.twrapper}
       >
-
-
-        {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
-     
-
-        {/* <TextInput style={styles.input} placeholder={"Add new tablet"} value={tab} onChangeText={text=>setTab(text)}/> */}
-
 
         <TouchableOpacity onPress={goToForm}>
 
