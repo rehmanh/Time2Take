@@ -38,7 +38,7 @@ const Mainscreen = () => {
   const showMedications = () => {
     return items.map((item,index)=> {
       return(
-      <TouchableOpacity key={item.id} onPress={() => alertIfDelete(item)} >
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => alertIfDelete(item)} >
         <Cards text={item.name} schedule={item.time}/>
       </TouchableOpacity>)
       });
@@ -79,7 +79,7 @@ const Mainscreen = () => {
         onPress: () => console.log('Ask me later pressed'),
       },
       {
-        text: 'Record', 
+        text: 'Medication Taken', 
         onPress: () => console.log('Record Pressed')
       },
       {
@@ -113,7 +113,7 @@ const Mainscreen = () => {
         style={styles.twrapper}
       >
 
-        <TouchableOpacity onPress={goToForm}>
+        <TouchableOpacity  style={{flex: 1}} onPress={goToForm}>
 
           <View style={styles.addwrapper}>
             <Text style={styles.addtext}>+</Text>
@@ -154,8 +154,7 @@ const styles = StyleSheet.create({
   },
   addwrapper: {
     height: 60,
-    width: 300,
-    left:27,
+    width: 250,
     borderRadius: 20,
     backgroundColor: COLORS.tertiary,
     alignSelf: 'center',
